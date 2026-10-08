@@ -23,3 +23,100 @@ class State(TypedDict):
     reddit_analysis: str | None
     final_answer: str | None
 
+def google_search(state: State):
+    return
+
+def bing_search(state: State):
+    return
+
+def reddit_search(state: State):
+    return
+
+def analyze_reddit_posts(state: State):
+    return
+
+def retrieve_reddit_posts(state: State):
+    return
+
+def analyze_google_results(state: State):
+    return
+
+def analyze_bing_results(state: State):
+    return
+
+def analyze_reddit_results(state: State):
+    return
+
+def synthesize_analyses(state: State):
+    return
+
+graph_builder = StateGraph(State)
+
+graph_builder.add_node("google_search", google_search)
+graph_builder.add_node("bing_search", bing_search)
+graph_builder.add_node("reddit_search", reddit_search)
+graph_builder.add_node("analyze_reddit_posts", analyze_reddit_posts)
+graph_builder.add_node("retrieve_reddit_posts", retrieve_reddit_posts)
+graph_builder.add_node("analyze_google_results", analyze_google_results)
+graph_builder.add_node("analyze_bing_results", analyze_bing_results)
+graph_builder.add_node("analyze_reddit_results", analyze_reddit_results)
+graph_builder.add_node("synthesize_analyses", synthesize_analyses)
+
+graph_builder.add_edge(START, "google_search")
+graph_builder.add_edge(START, "bing_search")
+graph_builder.add_edge(START, "reddit_search")
+
+graph_builder.add_edge("google_search", "analyze_reddit_posts")
+graph_builder.add_edge("bing_search", "analyze_reddit_posts")
+graph_builder.add_edge("reddit_search", "analyze_reddit_posts")
+graph_builder.add_edge("analyze_reddit_posts", "retrieve_reddit_posts")
+
+graph_builder.add_edge("retrieve_reddit_posts", "analyze_google_results")
+graph_builder.add_edge("retrieve_reddit_posts", "analyze_bing_results")
+graph_builder.add_edge("retrieve_reddit_posts", "analyze_reddit_results")
+
+graph_builder.add_edge("analyze_google_results", "synthesize_analyses")
+graph_builder.add_edge("analyze_bing_results", "synthesize_analyses")
+graph_builder.add_edge("analyze_reddit_results", "synthesize_analyses")
+
+graph_builder.add_edge("synthesize_analyses", END)
+
+graph = graph_builder.compile()
+
+def run_chatbot():
+    print("Multi-Source Research Agent")
+    print("Type 'exit' to quit\n")
+
+    while True:
+        user_input = input("Ask me anything: ")
+        if user_input.lower() == "exit":
+            print("Bye!")
+            break
+
+        state = {
+            "messages": [{"role": "user", "content": user_input}],
+            "user_question": user_input,
+            "google_results": None,
+            "bing_results": None,
+            "reddit_results": None,
+            "selected_reddit_urls": None,
+            "reddit_post_data": None,
+            "google_analysis": None,
+            "bing_analysis": None,
+            "reddit_analysis": None,
+            "final_answer": None,
+        }
+
+        print("\nStarting parrallel search process...")
+        print("Launching Google, Bing, and Reddit searches...\n")
+        final_state = graph.invoke(state)
+
+        if final_state.get("final_answer"):
+            print(f"\nFinal Answer:\n{final_state.get('final_answer')}\n")
+
+        print("-" * 80)
+
+if __name__ == "__main__":
+    run_chatbot()
+
+
