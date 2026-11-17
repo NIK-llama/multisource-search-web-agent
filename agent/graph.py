@@ -69,7 +69,7 @@ class RedditURLAnalysisInput(BaseModel):
 
 # ── LLM initialisation ────────────────────────────────────────────────────────
 llm = init_chat_model(
-    "gemini-3.8-flash",
+    "gemini-3.5-flash-lite",
     model_provider="google_genai",
 )
 
